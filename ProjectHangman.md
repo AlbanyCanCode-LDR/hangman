@@ -98,34 +98,12 @@ const letter = prompt.question("Please guess a letter: ");
 
 You will either be given a passing or failing grade. You must meet all of the following application, UI and coding requirements in order to pass:
 
-### Application Requirements
-
-- Your application must start over the command line with `node .`
-- Your application should not crash at any point.
-
-### UI Requirements
-
-- Use words from a word bank (_word-bank.js_). For each round, a word must be chosen at random.
-- The game should have multiple rounds. Each round should end after either the player guesses the entire word or six incorrect guesses.
-- After each round, display the answer (the word the computer picked) and the results. The results should be how many games the player won out of the total games played.
-- Display visual feedback in the guessing portion of the game. Show which letter guesses are correct, what letters in what positions are still remaining, what letters the player has guessed and how many guesses are left.
-- Only accept letters _(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ)_. If a player guesses a special character, it should not count as a guess.
-- Your game must be case insensitive. This means that when the player guesses a letter, the computer will treat lower case and upper case versions of a letter as the same character.
-- Only accept one letter at a time. If the player enters more than one letter, only accept the first letter and ignore the rest. For example, if a player types "as", you should treat it like "a".
-- Repeat guesses should not count against the player. For example, if the player has three guesses left, and he has already guessed the letter "a", he should still have three guesses left when he guesses "a" second time.
-- The game will keep on going until the user presses `ctrl + c` to stop. You must include this in your instructions before each round.
-- Please make sure your game text is easily readable. Use the new line characters (`\n`) where needed.
 
 ### Coding Requirements
 
 - You must have at least three arrow functions (but we recommend using arrow functions for all functions).
 - It will be an **automatic failure** if you use _var_.
 
-#### Bonus
-
-This won't count towards whether you pass or fail, but we encourage you to meet this requirement too:
-
-- Your code must contain at least one high order function with arrays (e.g. _Array.forEach_, _Array.map_, _Array.find_, _Array.filter_ and _Array.reduce_).
 
 ### Code Quality
 
@@ -140,6 +118,8 @@ While you will not fail if you do not meet these quality requirements, we will a
 - Only have actual comments within comment tags. Do not commit code that you commented out for debugging purposes.
 - Remove any code that is not being used. (This affects application load time as well as code quality.)
 - Use proper indentation. (Prettier can take care of this.)
+
+
 
 ### Hints
 
@@ -164,6 +144,73 @@ if (/[a-zA-Z]/.test(userInput)) {
   console.log("This is NOT a letter");
 }
 ```
+#### Bonus
+
+This won't count towards whether you pass or fail, but we encourage you to meet this requirement too:
+
+- Your code must contain at least one high order function with arrays (e.g. _Array.forEach_, _Array.map_, _Array.find_, _Array.filter_ and _Array.reduce_).
+
+
+
+### Application Requirements
+
+- Your application must start over the command line with `node .`
+- Your application should not crash at any point.
+
+### UI Requirements
+
+- Use words from a word bank (_word-bank.js_).
+  - For each round, a word must be chosen at random.
+
+- The game should have multiple rounds. 
+  - Each round should end after either the player guesses the entire word or six incorrect guesses.
+
+
+- Display visual feedback in the guessing portion of the game. 
+  Show: 
+    which letter guesses are correct, 
+    what letters in what positions are still remaining, 
+    what letters the player has guessed 
+    and how many guesses are left.
+
+
+- After each round display: 
+  --the answer (the word the computer picked) 
+  + 
+  --and the results. 
+    The results should be how many games the player won out of the total games played.
+
+
+
+
+
+- Only accept letters _(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ)_. 
+    - Your game must be case insensitive. 
+        **This means that when the player guesses a letter, the computer will treat lower case and upper case versions of a letter as the same character.**
+ 
+ - Only accept one letter at a time. 
+     ** If the player enters more than one letter, only accept the first letter and ignore the rest. For example, if a player types "as", you should treat it like "a".** 
+
+  =If a player guesses a special character it should not count as a guess.
+      
+- Repeat guesses should not count against the player. 
+
+      ***For example, if the player has three guesses left, and he has already guessed the letter "a", he should still have three guesses left when he guesses "a" second time.***
+
+
+------------------------------------------------------------------------
+
+- The game will keep on going until the user presses `ctrl + c` to stop. 
+
+You must include this in your instructions before each round.
+- Please make sure your game text is easily readable. Use the new line characters (`\n`) where needed.
+
+
+
+
+
+
+
 
 ## Project Resubmission
 
