@@ -1,6 +1,9 @@
 import prompt from "readline-sync";
 import wordBank from "./word-bank.js";
 
+//Global Variables
+// let numberOfguesses = 6;
+
 // View
 
 let displayInstructionsToConsole = () => {
@@ -38,7 +41,7 @@ let convertGuessedLetterToArray = () => {
 
 let guessedLetterArray = convertGuessedLetterToArray();
 
-// console.log(guessedLetterArray);
+console.log(guessedLetterArray);
 
 let evaluateTypedLetterAgainstRules = () => {
   console.log(guessedLetter);
@@ -56,8 +59,113 @@ let evalOfTypedLetter = evaluateTypedLetterAgainstRules();
 
 console.log(evalOfTypedLetter); //TAKE OUT OF FINAL PROJECT, ONLY FOR DEBUGGING
 
+let evalOfTypedLetterIfItPassesRulesBackToArray = () => {
+  let passedRulesGuess = evalOfTypedLetter.split("");
+  return passedRulesGuess;
+};
+
+// let guess = evalOfTypedLetterIfItPassesRulesBackToArray();
+
+// console.log(guess);
+
+let compareTypedLetterWithRandomWordArray = () => {};
+
+let guess = "a"; // this will be replaced with the variable representing   TAKE OUT OF FINAL PROJECT, ONLY FOR DEBUGGING
+
+let numberOfguesses = 6;
+console.log(numberOfguesses);
+
+let arr = ["a", "b", "c"];
+console.log(arr);
+
+let firstGuess = (aGuess) => {
+  console.log(typeof aGuess);
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === aGuess) {
+      arr.splice(i, 1);
+      numberOfguesses--;
+
+      return arr;
+    }
+  }
+};
+
+arr = firstGuess(guess);
+
+console.log(arr);
+console.log(`Remaining number of geusses: ${numberOfguesses}`);
+
+/* 
+
+
+
+let futureGuesses = (aGuess) => {
+  console.log(typeof guess);
+
+
+  for (let i = 0; i < arr.length; i++) {
+
+    if (arr[i] === aGuess) {
+      arr.splice(i, 1);
+      }
+     else{
+     console.log("You have tried this before")
+     }
+      
+      return arr;
+    }
+
+  }
+  
+ let secondGuess ="a";
+
+let nextGuess = futureGuesses(secondGuess);
+
+console.log(nextGuess)
+
+//https://love2dev.com/blog/javascript-remove-from-array/#remove-from-array-splice-value
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+
+///////////////////////////////////////////////////////////////////////////////
+
 let compareTypedLetterWithRandomWordArray = () => {
-  for (let i = 0; i < randomWord.length; i++) {
+  let guess = "a";
+
+  let numberOfguesses = 6;
+  console.log(numberOfguesses);
+
+  let arr = ["a", "b", "c"];
+  console.log(arr);
+
+  let firstGuess = (aGuess) => {
+    console.log(typeof aGuess);
+
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === aGuess) {
+        arr.splice(i, 1);
+        numberOfguesses--;
+
+        return arr;
+      }
+    }
+  };
+
+  arr = firstGuess(guess);
+
+  console.log(arr);
+  console.log(`Remaining number of geusses: ${numberOfguesses}`);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+ for (let i = 0; i < randomWord.length; i++) {
     if (randomWord[i] === evalOfTypedLetter) {
       console.log("This is a correct guess");
       let randomWordToArray = randomWord.split(""); //consolidate after, ONLY FOR DEBUGGING
@@ -69,16 +177,6 @@ let compareTypedLetterWithRandomWordArray = () => {
       console.log("This is a wrong guess");
     }
   }
-};
-/* 
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
-
 
 */
 
@@ -88,9 +186,13 @@ console.log(comparison); //TAKE OUT OF FINAL PROJECT, ONLY FOR DEBUGGING
 
 // View
 
-let displayNextGuessesRemaining = () => {};
+let displayNextGuessesRemaining = () => {
+  console.log(`Remaining number of geusses: ${numberOfguesses}`);
+};
 
-let displayPromptForNextNextGuess = () => {};
+let displayPromptForNextNextGuess = () => {
+  //While (remaining number of guesses is greater than zero run first function  through future guesses)
+};
 
 //repeat model and view functions until end of game round
 
