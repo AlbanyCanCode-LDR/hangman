@@ -1,5 +1,5 @@
 import prompt from "readline-sync";
-import wordBank from "./word-bank.js";
+import wordBank from "./word-bank1.js";
 
 //Global Variables
 let numberOfguesses = 6;
@@ -81,10 +81,9 @@ let firstLetterGuess = (passedLetter, randomWord) => {
 
       guessedLetters.push(passedLetter);
       console.log(`Current guessedLetters are ${guessedLetters}`);
-
-      return randomWord;
     }
   }
+  return randomWord;
 };
 
 let remainingLettersToGuess = firstLetterGuess(
@@ -141,8 +140,9 @@ let remainingGuesses = (selectRandom) => {
 
 let theGame = remainingGuesses(selectRandomWordFromWordBank);
 console.log(theGame);
-/* 
 
+/* 
+node --inspect index.js // DEBUG console
 
 
 let futureGuesses = (aGuess) => {
