@@ -4,6 +4,8 @@ import wordBank from "./word-bank1.js";
 //Global Variables
 let numberOfguesses = 6;
 
+let guessedWord;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // View
@@ -43,6 +45,15 @@ let storeTypedLetter = () => {
 
 let guessedLetter = storeTypedLetter();
 
+let generateGuessArray = (randomWord) => {
+  let guessArray = [];
+  for (let i = 0; i < randomWord.length; i++) {
+    guessArray.push("_");
+  }
+
+  return guessArray;
+};
+guessedWord = generateGuessArray(randomWord);
 ///////////////////////////////////////////////////////////////////////////////
 
 //Model
@@ -73,22 +84,24 @@ let evalOfTypedLetter = evaluateTypedLetterAgainstRules(guessedLetterArray);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-let firstLetterGuess = (passedLetter, randomWord) => {
+let firstLetterGuess = (passedLetter, randomWord, guessedWord) => {
   let guessedLetters = [];
   for (let i = 0; i < randomWord.length; i++) {
     if (randomWord[i] === passedLetter) {
-      randomWord.splice(i, 1);
+      guessedWord[i] = passedLetter;
 
       guessedLetters.push(passedLetter);
       console.log(`Current guessedLetters are ${guessedLetters}`);
     }
   }
+  console.log(`The guessedWord is ${guessedWord}`);
   return randomWord;
 };
 
 let remainingLettersToGuess = firstLetterGuess(
   evalOfTypedLetter,
-  randomWordArray
+  randomWordArray,
+  guessedWord
 );
 
 console.log(
@@ -118,20 +131,47 @@ let remainingGuesses = (selectRandom) => {
 
     let theRemainingLettersToGuess = firstLetterGuess(
       evalOfTypedLetter,
-      randomWordArray
+      randomWordArray,
+      guessedWord
     );
 
-    let lettersLeft = theRemainingLettersToGuess;
-    console.log(lettersLeft);
+    let userHasWon = (guessedWord) => {
+      if (guessedWord.includes("_")) {
+        return false;
+      } else {
+        return true;
+      }
+    };
 
     console.log(`Remaining number of guesses: ${numberOfguesses}`);
     numberOfguesses--;
+    /* 
+
+    for (iterate through index values of guessedWord) {
+    show hangman every time a mistake is made}
+    if a mistake is made, add the next peice to hangman
+    if = 6, then no hangman
+    if = 5, then one hangman
+    if = 4, then two hangman
+given that you know that the hangman has to change, function could be called Where you have made a mistake,
+
+need detection of mistake 
+      */
+    /*
+let head = [0];
+let body = []
+
+let wholeBody = [ [], [], ]
+
+
+
+*/
 
     if (numberOfguesses === 0) {
       console.log("\nYou have lost the game\n");
 
       break;
-    } else if (lettersLeft.length === 0) {
+    } else if (userHasWon(guessedWord)) {
       console.log("\nYou have won the game\n");
       break;
     }
