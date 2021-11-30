@@ -1,242 +1,208 @@
 import prompt from "readline-sync";
-import wordBank from "./word-bank1.js";
+import wordBank from "./word-bank.js";
 
-//Global Variables
+//Globals
+let randomWordArray;
+//
 let numberOfguesses = 6;
+//
+let guessArrayOfUnderscores = [];
+//
+let hangmanState;
+//
+let correctlyGuessedLetter = [];
 
-let guessedWord;
-
-///////////////////////////////////////////////////////////////////////////////
-
-// View
+////////////////////
 
 let displayInstructionsToConsole = () => {
   console.log("\nWelcome to Hangman!\nPress ctrl+c to stop\n");
   console.log("\nPlease Guess a Letter\n");
 };
 
-displayInstructionsToConsole();
+////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-
-// Model
-
-let selectRandomWordFromWordBank = () => {
-  let randomWord = wordBank[Math.floor(Math.random() * wordBank.length)];
-  return randomWord;
+let selectRandomWordFromWordBankToBeArrayified = () => {
+  randomWordArray =
+    wordBank[Math.floor(Math.random() * wordBank.length)].split("");
+  return randomWordArray;
 };
 
-let randomWord = selectRandomWordFromWordBank();
+let generateGuessArrayOfUnderscores = (randomWord) => {
+  // let guessArrayOfUnderscores = [];
+  for (let i = 0; i < randomWord.length; i++) {
+    guessArrayOfUnderscores.push("_");
+  }
 
-///////////////////////////////////////////////////////////////////////////////
+  return guessArrayOfUnderscores;
+};
+////////////////////
 
-let randomWordArray = randomWord.split(""); //DEBUG
-
-console.log(`The Random Word to an array is ${randomWordArray}\n`); // DEBUG
-
-///////////////////////////////////////////////////////////////////////////////
-
-// Controller
-
-let storeTypedLetter = () => {
-  let userInput = prompt.question("\nGuess a letter of the Random Word\n\n");
+let arrayifyGuessedLetter = () => {
+  let userInput = prompt.question("\nGuess one letter of the Random Word\n\n");
+  userInput = userInput.split();
   return userInput;
 };
 
-let guessedLetter = storeTypedLetter();
+////////////////////
 
-let generateGuessArray = (randomWord) => {
-  let guessArray = [];
-  for (let i = 0; i < randomWord.length; i++) {
-    guessArray.push("_");
+let produceHangmanState = (numberOfguesses) => {
+  hangmanState = [
+    `
+    +---+
+    |   |
+            |
+            |
+            |
+            |
+    =========
+    `,
+    `
+    +---+
+    |   |
+    O   |
+            |
+            |
+            |
+    =========
+    `,
+    `
+    +---+
+    |   |
+    O   |
+    |   |
+            |
+            |
+    =========
+    `,
+    `
+    +---+
+    |   |
+    O   |
+   /|   |
+            |
+            |
+    =========
+    `,
+    `
+    +---+
+    |   |
+    O   |
+   /|\  |
+            |
+            |
+    =========
+    `,
+    `
+    +---+
+    |   |
+    O   |
+   /|\  |
+   / \  |
+            |
+    =========
+    `,
+  ];
+
+  switch (numberOfguesses) {
+    case 6:
+      return console.log(hangmanState[0]);
+
+    case 5:
+      return console.log(hangmanState[1]);
+
+    case 4:
+      return console.log(hangmanState[2]);
+
+    case 3:
+      return console.log(hangmanState[3]);
+
+    case 2:
+      return console.log(hangmanState[5]);
+
+    case 1:
+      return console.log(hangmanState[6]);
   }
-
-  return guessArray;
 };
-guessedWord = generateGuessArray(randomWord);
-///////////////////////////////////////////////////////////////////////////////
+////////////////////
 
-//Model
+let doesGuessFollowRules = (evalLetter) => {
+  if (/[a-zA-Z]/.test(evalLetter[0])) {
+    console.log(
+      "\nThe first letter of this string fits the format of a valid guess, \ncharacters after that are automatically ignored\n"
+    );
+    return evalLetter[0];
+  } else if (/[^a-zA-Z]/.test(evalLetter[0])) {
+    console.log(`\nThis: ${evalLetter} is not a letter\n`);
 
-let convertGuessedLetterToArray = (gssedLetter) => {
-  let guessedLetterArray = gssedLetter.split();
-  return guessedLetterArray;
-};
-
-let guessedLetterArray = convertGuessedLetterToArray(guessedLetter);
-
-///////////////////////////////////////////////////////////////////////////////
-
-let evaluateTypedLetterAgainstRules = (guessedLetterArray) => {
-  if (/[a-zA-Z]/.test(guessedLetterArray[0])) {
-    console.log("\nThis is a letter\n");
-    return guessedLetterArray[0];
-  } else if (/[^a-zA-Z]/.test(guessedLetterArray[0])) {
-    // Do something here
-    console.log(`\nThis: ${guessedLetterArray} is not a letter\n`);
-
-    let guessedLetter = storeTypedLetter();
-    return guessedLetter;
+    let guessedLetter = arrayifyGuessedLetter();
+    return guessedLetter[0];
   }
 };
 
-let evalOfTypedLetter = evaluateTypedLetterAgainstRules(guessedLetterArray);
-
-///////////////////////////////////////////////////////////////////////////////
-
-let firstLetterGuess = (passedLetter, randomWord, guessedWord) => {
-  let guessedLetters = [];
+let usingValidGuessInGame = (
+  letterFollowsRules,
+  randomWord,
+  guessArrayOfUnderscores
+) => {
   for (let i = 0; i < randomWord.length; i++) {
-    if (randomWord[i] === passedLetter) {
-      guessedWord[i] = passedLetter;
-
-      guessedLetters.push(passedLetter);
-      console.log(`Current guessedLetters are ${guessedLetters}`);
+    if (randomWord[i] === letterFollowsRules) {
+      guessArrayOfUnderscores[i] = letterFollowsRules;
     }
   }
-  console.log(`The guessedWord is ${guessedWord}`);
-  return randomWord;
+
+  --numberOfguesses;
+
+  return guessArrayOfUnderscores;
 };
 
-let remainingLettersToGuess = firstLetterGuess(
-  evalOfTypedLetter,
-  randomWordArray,
-  guessedWord
-);
+let informUserOfVictory = (guessArrayOfUnderscores) => {
+  if (guessArrayOfUnderscores.includes("_") === false) {
+    return true;
+  }
+};
 
-console.log(
-  `These are the remaining letters in the random word: ${remainingLettersToGuess} \n`
-); // DEBUG
+let informUserOfDefeat = (numberOfguesses) => {
+  if (numberOfguesses === 0) {
+    return true;
+  }
+};
 
-console.log(`Remaining number of geusses: ${numberOfguesses}`);
+////////////////////
 
-//////////////////////////////////////////////////////////////////////////
-let remainingGuesses = (selectRandom) => {
-  while (numberOfguesses >= 0) {
+let gameLoop = () => {
+  let randomWord = selectRandomWordFromWordBankToBeArrayified();
+
+  let guessArrayOfUnderscores = generateGuessArrayOfUnderscores(randomWord); // _ _ _ _ ect..
+
+  while (numberOfguesses > 0) {
+    console.log(`\n${guessArrayOfUnderscores}\n`);
+
     displayInstructionsToConsole();
 
-    // let randomWordArray = randomWord.split("");
+    let hangmanState = produceHangmanState(numberOfguesses);
 
-    let theRemainingLetters = remainingLettersToGuess;
-    console.log(`The remaining letters to guess ${theRemainingLetters}`);
+    console.log(`\nYou have ${numberOfguesses} guesses left\n`);
 
-    let guessedLetter = storeTypedLetter(); //modify for the condition of two of the same letters in a row
-    console.log(guessedLetter);
+    let guess = arrayifyGuessedLetter();
+    let letterFollowsRules = doesGuessFollowRules(guess);
 
-    let guessedLetterArray = convertGuessedLetterToArray(guessedLetter);
-    console.log(guessedLetterArray);
-
-    let evalOfTypedLetter = evaluateTypedLetterAgainstRules(guessedLetterArray);
-    console.log(evalOfTypedLetter);
-
-    let theRemainingLettersToGuess = firstLetterGuess(
-      evalOfTypedLetter,
-      randomWordArray,
-      guessedWord
+    let playingGameWithValidInput = usingValidGuessInGame(
+      letterFollowsRules,
+      randomWord,
+      guessArrayOfUnderscores
     );
 
-    let userHasWon = (guessedWord) => {
-      if (guessedWord.includes("_")) {
-        return false;
-      } else {
-        return true;
-      }
-    };
+    let winCondition = informUserOfVictory(playingGameWithValidInput);
 
-    console.log(`Remaining number of guesses: ${numberOfguesses}`);
-    numberOfguesses--;
-    /* 
+    let loseCondition = informUserOfDefeat(numberOfguesses);
 
-    for (iterate through index values of guessedWord) {
-    show hangman every time a mistake is made}
-    if a mistake is made, add the next peice to hangman
-    if = 6, then no hangman
-    if = 5, then one hangman
-    if = 4, then two hangman
-given that you know that the hangman has to change, function could be called Where you have made a mistake,
-
-need detection of mistake 
-      */
-    /*
-let head = [0];
-let body = []
-
-let wholeBody = [ [], [], ]
-
-
-
-*/
-
-    if (numberOfguesses === 0) {
-      console.log("\nYou have lost the game\n");
-
-      break;
-    } else if (userHasWon(guessedWord)) {
-      console.log("\nYou have won the game\n");
+    if (winCondition === true) {
+      console.log("\nYou have won\n");
+    } else if (loseCondition === true) {
+      console.log("\nYou have lost\n");
       break;
     }
   }
 };
 
-let theGame = remainingGuesses(selectRandomWordFromWordBank);
-console.log(theGame);
-
-/* 
-node --inspect index.js // DEBUG console
-
-
-let futureGuesses = (aGuess) => {
-  console.log(typeof guess);
-
-
-  for (let i = 0; i < arr.length; i++) {
-
-    if (arr[i] === aGuess) {
-      arr.splice(i, 1);
-      }
-     else{
-     console.log("You have tried this before")
-     }
-      
-      return arr;
-    }
-
-  }
-  
- let secondGuess ="a";
-
-let nextGuess = futureGuesses(secondGuess);
-
-console.log(nextGuess)
-
-//https://love2dev.com/blog/javascript-remove-from-array/#remove-from-array-splice-value
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
-
-
-
-let comparison = compareTypedLetterWithRandomWordArray();
-
-console.log(comparison); //TAKE OUT OF FINAL PROJECT, ONLY FOR DEBUGGING
-
-// View
-
-let displayNextGuessesRemaining = () => {
-  console.log(`Remaining number of geusses: ${numberOfguesses}`);
-};
-
-let displayPromptForNextNextGuess = () => {
-  //While (remaining number of guesses is greater than zero run first function  through future guesses)
-};
-
-//repeat model and view functions until end of game round
-
-let displayAfterEachGameRoundUserGeuessesCorrectlyOrNot = () => {};
-
-//repeat entire game until user quits using ctrl + c*/
+let newGameLoop = gameLoop();
