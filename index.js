@@ -1,7 +1,5 @@
 import prompt from "readline-sync";
-import wordBank from "./word-bank1.js";
-
-// use node --inspect index.js to debug
+import wordBank from "./word-bank.js";
 
 //Globals
 let randomWordArray;
@@ -27,14 +25,15 @@ let selectRandomWordFromWordBankToBeArrayified = () => {
 };
 
 let generateGuessArrayOfUnderscores = (randomWord) => {
-  // let guessArrayOfUnderscores = [];
   for (let i = 0; i < randomWord.length; i++) {
     guessArrayOfUnderscores.push("_");
   }
 
   return guessArrayOfUnderscores;
 };
-////////////////////
+
+/* vvv INPUT VALIDATION vvv */
+
 let doesGuessFollowRules = (evalLetter) => {
   if (/[a-zA-Z]/.test(evalLetter)) {
     console.log(
@@ -45,19 +44,16 @@ let doesGuessFollowRules = (evalLetter) => {
     console.log(`\nThis: ${evalLetter} is not a letter\n`);
     return false;
   }
-  //needs a loop to check if the user has already guessed this letter
-  //and to force the user to guess a letter in a valid format infinitely until they do
 };
-//check specs for multiple guess of right and wrong letter
+
 let promptForLetter = () => {
-  /// change name to more descriptive "promt for letter"
-  let guessedLetter;
-  /* every time the user input at index 0 is a special character, repeat prompt and clear previous value */
+  let guessedLetter = [];
+
   while (true) {
     let userInput = prompt.question(
-      "\nGuess one letter of the Random Word\n\n"
+      "\nGuess one letter of the Selected Random Word\n\n"
     );
-    userInput = userInput.split();
+
     guessedLetter = userInput[0];
 
     if (doesGuessFollowRules(guessedLetter)) {
@@ -65,16 +61,16 @@ let promptForLetter = () => {
     }
   }
 
-  return guessedLetter.toLowerCase(); /// change user input to a lowercase letter
+  return guessedLetter[0].toLowerCase(); /// change user input to a lowercase letter
 };
 
-////////////////////
+////////////////////////////
 
 let produceHangmanState = (numberOfguesses) => {
   let hangmanState = [
     `
-    +---+
-    |   |
+        +---+
+        |   |
             |
             |
             |
@@ -82,56 +78,56 @@ let produceHangmanState = (numberOfguesses) => {
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
+        +---+
+        |   |
+        O   |
             |
             |
             |
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
-    |   |
+        +---+
+        |   |
+        O   |
+        |   |
             |
             |
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
-   /|   |
+        +---+
+        |   |
+        O   |
+       /|   |
             |
             |
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
-   /|\\  |
+        +---+
+        |   |
+        O   |
+       /|\\  |
             |
             |
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
-   /|\\  |
-   /    |
+        +---+
+        |   |
+        O   |
+       /|\\  |
+       /    |
             |
     =========
     `,
     `
-    +---+
-    |   |
-    O   |
-   /|\\  |
-   / \\  |
+        +---+
+        |   |
+        O   |
+       /|\\  |
+       / \\  |
             |
     =========
     `,
@@ -159,6 +155,7 @@ let produceHangmanState = (numberOfguesses) => {
       return console.log(hangmanState[6]);
   }
 };
+
 ////////////////////
 
 let usingValidGuessInGame = (
@@ -169,8 +166,8 @@ let usingValidGuessInGame = (
   let foundLetter = false;
 
   for (let i = 0; i < randomWord.length; i++) {
-    if (randomWord[i] === letterFollowsRules) {
-      guessArrayOfUnderscores[i] = letterFollowsRules;
+    if (randomWord[i] === letterFollowsRules[0]) {
+      guessArrayOfUnderscores[i] = letterFollowsRules[0];
       foundLetter = true;
     }
   }
@@ -199,6 +196,7 @@ let informUserOfDefeat = (numberOfguesses) => {
 let gameLoop = () => {
   let randomWord = selectRandomWordFromWordBankToBeArrayified();
 
+  console.log(randomWord);
   let guessArrayOfUnderscores = generateGuessArrayOfUnderscores(randomWord); // _ _ _ _ ect..
 
   while (numberOfguesses > 0) {
