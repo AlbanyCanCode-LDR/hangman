@@ -1,5 +1,5 @@
 import prompt from "readline-sync";
-import wordBank from "./word-bank.js";
+import wordBank from "./word-bank1.js";
 
 //Globals
 let randomWordArray;
@@ -163,6 +163,23 @@ let usingValidGuessInGame = (
   randomWord,
   guessArrayOfUnderscores
 ) => {
+  /*
+     For every guess I need to determine if the letter has been repeated before
+          
+      if the letter has been repeated, regardless of whether its part of the random word, it will NOT decrement the guesses
+
+      1.  condition that will guarantee a decrement of number of guesses
+
+           Condition: the guess is BOTH incorrect AND has not been guessed before
+
+      2.  conditions that will NOT decrement number of guesses 
+
+          A. Condition: The guess is correct AND it has been used before
+
+          B. Condition: The guess is incorrect AND it has been used before
+
+     */
+
   let foundLetter = false;
 
   for (let i = 0; i < randomWord.length; i++) {
@@ -178,6 +195,8 @@ let usingValidGuessInGame = (
 
   return guessArrayOfUnderscores;
 };
+
+////////////////////
 
 let informUserOfVictory = (guessArrayOfUnderscores) => {
   if (guessArrayOfUnderscores.includes("_") === false) {
@@ -196,7 +215,6 @@ let informUserOfDefeat = (numberOfguesses) => {
 let gameLoop = () => {
   let randomWord = selectRandomWordFromWordBankToBeArrayified();
 
-  console.log(randomWord);
   let guessArrayOfUnderscores = generateGuessArrayOfUnderscores(randomWord); // _ _ _ _ ect..
 
   while (numberOfguesses > 0) {
@@ -232,3 +250,5 @@ let gameLoop = () => {
 };
 
 let newGameLoop = gameLoop();
+
+// The game will keep on going until the user presses ctrl + c to stop. You must include this in your instructions before each round.
