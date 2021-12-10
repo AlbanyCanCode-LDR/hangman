@@ -2,12 +2,9 @@ import prompt from "readline-sync";
 import wordBank from "./word-bank1.js";
 
 //Globals
-let randomWordArray;
+
 //
-let numberOfguesses = 6;
-//
-let guessArrayOfUnderscores = [];
-//
+let numberOfguesses;
 
 ////////////////////
 
@@ -19,12 +16,13 @@ let displayInstructionsToConsole = () => {
 ////////////////////
 
 let selectRandomWordFromWordBankToBeArrayified = () => {
-  randomWordArray =
+  let randomWordArray =
     wordBank[Math.floor(Math.random() * wordBank.length)].split("");
   return randomWordArray;
 };
 
 let generateGuessArrayOfUnderscores = (randomWord) => {
+  let guessArrayOfUnderscores = [];
   for (let i = 0; i < randomWord.length; i++) {
     guessArrayOfUnderscores.push("_");
   }
@@ -36,12 +34,9 @@ let generateGuessArrayOfUnderscores = (randomWord) => {
 
 let doesGuessFollowRules = (evalLetter) => {
   if (/[a-zA-Z]/.test(evalLetter)) {
-    console.log(
-      "\nThe first letter of this string fits the format of a valid guess, \ncharacters after that are automatically ignored\n"
-    );
     return true;
   } else {
-    console.log(`\nThis: ${evalLetter} is not a letter\n`);
+    console.log(`This: ${evalLetter} is not a letter`);
     return false;
   }
 };
@@ -51,7 +46,7 @@ let promptForLetter = () => {
 
   while (true) {
     let userInput = prompt.question(
-      "\nGuess one letter of the Selected Random Word\n\n"
+      "Guess one letter of the Selected Random Word\n"
     );
 
     guessedLetter = userInput[0];
@@ -61,7 +56,7 @@ let promptForLetter = () => {
     }
   }
 
-  return guessedLetter[0].toLowerCase(); /// change user input to a lowercase letter
+  return guessedLetter.toLowerCase(); /// change user input to a lowercase letter
 };
 
 ////////////////////////////
@@ -161,38 +156,31 @@ let produceHangmanState = (numberOfguesses) => {
 let usingValidGuessInGame = (
   letterFollowsRules,
   randomWord,
-  guessArrayOfUnderscores
+  guessArrayOfUnderscores,
+  previousGuesses
 ) => {
-  /*
-     For every guess I need to determine if the letter has been repeated before
-          
-      if the letter has been repeated, regardless of whether its part of the random word, it will NOT decrement the guesses
+  /* Change letterFOllowsRules to something better reflecting the non boolean nature of the variable */
 
-      1.  condition that will guarantee a decrement of number of guesses
+  if (
+    !previousGuesses.has(
+      letterFollowsRules
+    ) /* if the set does not contain the variable letter followsRules, then don't execute the rest of the code */
+  ) {
+    let foundLetter = false;
 
-           Condition: the guess is BOTH incorrect AND has not been guessed before
+    for (let i = 0; i < randomWord.length; i++) {
+      if (randomWord[i] === letterFollowsRules) {
+        guessArrayOfUnderscores[i] = letterFollowsRules;
+        foundLetter = true;
+      }
+    }
 
-      2.  conditions that will NOT decrement number of guesses 
+    previousGuesses.add(letterFollowsRules);
 
-          A. Condition: The guess is correct AND it has been used before
-
-          B. Condition: The guess is incorrect AND it has been used before
-
-     */
-
-  let foundLetter = false;
-
-  for (let i = 0; i < randomWord.length; i++) {
-    if (randomWord[i] === letterFollowsRules[0]) {
-      guessArrayOfUnderscores[i] = letterFollowsRules[0];
-      foundLetter = true;
+    if (foundLetter === false) {
+      --numberOfguesses;
     }
   }
-
-  if (foundLetter === false) {
-    --numberOfguesses;
-  }
-
   return guessArrayOfUnderscores;
 };
 
@@ -217,22 +205,33 @@ let gameLoop = () => {
 
   let guessArrayOfUnderscores = generateGuessArrayOfUnderscores(randomWord); // _ _ _ _ ect..
 
+  let previousGuesses = new Set();
+
+  numberOfguesses = 6;
+
+  //
+  // let guessArrayOfUnderscores = [];
+  //
+
   while (numberOfguesses > 0) {
-    console.log(`\n${guessArrayOfUnderscores}\n`);
+    console.log(`${guessArrayOfUnderscores}`);
 
     displayInstructionsToConsole();
 
     let hangmanState = produceHangmanState(numberOfguesses);
 
-    console.log(`\nYou have ${numberOfguesses} guesses left\n`);
+    console.log(`You have ${numberOfguesses} guesses left`);
 
     let guess = promptForLetter();
 
     let playingGameWithValidInput = usingValidGuessInGame(
       guess,
       randomWord,
-      guessArrayOfUnderscores
+      guessArrayOfUnderscores,
+      previousGuesses
     );
+
+    console.log(previousGuesses);
 
     let winCondition = informUserOfVictory(playingGameWithValidInput);
 
@@ -249,6 +248,12 @@ let gameLoop = () => {
   }
 };
 
-let newGameLoop = gameLoop();
+let playGame = () => {
+  while (true) {
+    gameLoop();
+  }
+};
+
+playGame();
 
 // The game will keep on going until the user presses ctrl + c to stop. You must include this in your instructions before each round.
