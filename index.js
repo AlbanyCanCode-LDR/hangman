@@ -1,9 +1,7 @@
 import prompt from "readline-sync";
-import wordBank from "./word-bank1.js";
+import wordBank from "./word-bank.js";
 
 //Globals
-
-//
 let numberOfguesses;
 
 ////////////////////
@@ -30,17 +28,6 @@ let generateGuessArrayOfUnderscores = (randomWord) => {
   return guessArrayOfUnderscores;
 };
 
-/* vvv INPUT VALIDATION vvv */
-
-let doesGuessFollowRules = (evalLetter) => {
-  if (/[a-zA-Z]/.test(evalLetter)) {
-    return true;
-  } else {
-    console.log(`This: ${evalLetter} is not a letter`);
-    return false;
-  }
-};
-
 let promptForLetter = () => {
   let guessedLetter = [];
 
@@ -56,7 +43,17 @@ let promptForLetter = () => {
     }
   }
 
-  return guessedLetter.toLowerCase(); /// change user input to a lowercase letter
+  return guessedLetter.toLowerCase();
+};
+
+/* vvv INPUT VALIDATION vvv */
+let doesGuessFollowRules = (evalLetter) => {
+  if (/[a-zA-Z]/.test(evalLetter)) {
+    return true;
+  } else {
+    console.log(`This: ${evalLetter} is not a letter`);
+    return false;
+  }
 };
 
 ////////////////////////////
@@ -154,28 +151,24 @@ let produceHangmanState = (numberOfguesses) => {
 ////////////////////
 
 let usingValidGuessInGame = (
-  letterFollowsRules,
+  userGuessedLetter,
   randomWord,
   guessArrayOfUnderscores,
   previousGuesses
 ) => {
-  /* Change letterFOllowsRules to something better reflecting the non boolean nature of the variable */
+  /* Change userGuessedLetter to something better reflecting the non boolean nature of the variable */
 
-  if (
-    !previousGuesses.has(
-      letterFollowsRules
-    ) /* if the set does not contain the variable letter followsRules, then don't execute the rest of the code */
-  ) {
+  if (!previousGuesses.has(userGuessedLetter)) {
     let foundLetter = false;
 
     for (let i = 0; i < randomWord.length; i++) {
-      if (randomWord[i] === letterFollowsRules) {
-        guessArrayOfUnderscores[i] = letterFollowsRules;
+      if (randomWord[i] === userGuessedLetter) {
+        guessArrayOfUnderscores[i] = userGuessedLetter;
         foundLetter = true;
       }
     }
 
-    previousGuesses.add(letterFollowsRules);
+    previousGuesses.add(userGuessedLetter);
 
     if (foundLetter === false) {
       --numberOfguesses;
@@ -209,10 +202,6 @@ let gameLoop = () => {
 
   numberOfguesses = 6;
 
-  //
-  // let guessArrayOfUnderscores = [];
-  //
-
   while (numberOfguesses > 0) {
     console.log(`${guessArrayOfUnderscores}`);
 
@@ -231,18 +220,18 @@ let gameLoop = () => {
       previousGuesses
     );
 
-    console.log(previousGuesses);
-
     let winCondition = informUserOfVictory(playingGameWithValidInput);
 
     let loseCondition = informUserOfDefeat(numberOfguesses);
 
     if (winCondition === true) {
       console.log("\nYou have won\n");
+      console.log(randomWord);
       break;
     } else if (loseCondition === true) {
       console.log("\nYou have lost\n");
       produceHangmanState(numberOfguesses);
+      console.log(randomWord);
       break;
     }
   }
@@ -255,5 +244,3 @@ let playGame = () => {
 };
 
 playGame();
-
-// The game will keep on going until the user presses ctrl + c to stop. You must include this in your instructions before each round.
